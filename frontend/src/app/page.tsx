@@ -10,12 +10,17 @@ const listOfCipher: string[] = [
   "Affine Cipher",
   "Playfair Cipher",
   "Hill Cipher",
+  "Enigma cipher",
 ];
-const slug: string[] = [
-  "vignere-cipher",
-  "auto-key-vignere-cipher",
-  "extended-vignere-cipher",
-  "affine-cipher",
+
+const description: string[] = [
+  "Type of substitution cipher based on the vignere table",
+  "Variation of vignere cipher, the key is appended by the plaintext itself",
+  "Extended version of vignere cipher using 256 characters instead of 26",
+  "Expanded version of caesar cipher, using simple linear function",
+  "Substitution cipher based on 5x5 square with unique algorithm",
+  "Substitution cipher based on linear algebra",
+  "Substitution cipher that was used by Germany in World War 2",
 ];
 
 export default function Home() {
@@ -29,11 +34,15 @@ export default function Home() {
       </div>
       <div className={styles.grid}>
         {listOfCipher.map((cipher: string, index: number) => {
-          let slug = cipher.toLowerCase().replace(" ", "-");
+          let slug = cipher.toLowerCase().replaceAll(" ", "-");
           return (
             <Link href={`/${slug}`} className={styles.card} key={index}>
-              <h2 className={inter.className}>{cipher}</h2>
-              <p className={inter.className}>Cipher test</p>
+              <h2 className={`${inter.className} ${styles.heading}`}>
+                {cipher}
+              </h2>
+              <p className={`${inter.className} ${styles.hidden}`}>
+                {description[index]}
+              </p>
             </Link>
           );
         })}

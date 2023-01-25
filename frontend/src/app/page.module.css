@@ -3,7 +3,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 1rem;
+  padding: 2rem 1rem;
   min-height: 100vh;
 }
 
@@ -11,6 +11,10 @@
   font-weight: 800;
   font-size: 2rem;
   text-align: center;
+}
+
+.heading {
+  font-weight: 800;
 }
 
 .description {
@@ -188,6 +192,14 @@
   .center::before {
     transform: none;
     height: 300px;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  .heading {
+    font-size: 1em;
   }
 }
 
