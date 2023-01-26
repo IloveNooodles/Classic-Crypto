@@ -1,6 +1,6 @@
 import string
 import numpy as np
-from sanitize import Sanitize
+from encryption.sanitize import Sanitize
 
 class Hill:
     def __init__(self, key: str, size: int):
@@ -66,6 +66,3 @@ class Hill:
                 plaintext += self._charset[c]
         
         return plaintext
-    
-cipher = Hill("BDCF", 2)
-print(cipher.decrypt("TISZCINJULL"))
