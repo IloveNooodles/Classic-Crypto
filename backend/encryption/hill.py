@@ -1,6 +1,6 @@
 import string
 import numpy as np
-from encryption.sanitize import Sanitize
+from sanitize import Sanitize
 
 class Hill:
     def __init__(self, key: str, size: int):
@@ -11,6 +11,7 @@ class Hill:
         self._size = size
         for i in range(len(key)):
             self._key[i//size, i%size] = self._charset.find(key[i])
+        self._inv_key = self._mod_inv(self._key)
 
     def _mod_matmul(self, a, b, m=26):
         c = np.matmul(a, b)
@@ -39,13 +40,32 @@ class Hill:
         # encryption
         ciphertext = ""
         for i in range(0, len(text), self._size):
-            cur = [25 for _ in range(self._size)]
+            cur = [23 for _ in range(self._size)]
             for j in range(i, min(len(text), i+self._size)):
                 cur[j-i] = self._charset.find(text[j])
             enc = self._mod_matmul(self._key, cur)
             for c in enc:
-                if len(ciphertext) == len(text):
-                    break
                 ciphertext += self._charset[c]
         
         return ciphertext
+    
+    def decrypt(self, ciphertext: str) -> str:
+        # input sanitazion
+        assert(Sanitize.check_alphabet(ciphertext))
+        text = Sanitize.remove_whitespace(ciphertext)
+        assert(len(ciphertext) % self._size == 0)
+
+        # decryption
+        plaintext =  ""
+        for i in range(0, len(text), self._size):
+            cur = [0 for _ in range(self._size)]
+            for j in range(i, min(len(text), i+self._size)):
+                cur[j-i] = self._charset.find(text[j])
+            enc = self._mod_matmul(self._inv_key, cur)
+            for c in enc:
+                plaintext += self._charset[c]
+        
+        return plaintext
+    
+cipher = Hill("BDCF", 2)
+print(cipher.decrypt("TISZCINJULL"))
