@@ -1,7 +1,7 @@
+import styles from "@/styles/Root.module.scss";
+import { description, listOfCipher } from "@/utils/desc";
 import { inter } from "@/utils/fonts";
 import Link from "next/link";
-import { description, listOfCipher } from "@/utils/desc";
-import styles from "./page.module.css";
 
 export default function Home() {
   return (

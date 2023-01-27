@@ -1,8 +1,8 @@
 "use client";
 
+import styles from "@/styles/Cipher.module.scss";
 import { description } from "@/utils/desc";
 import { Inter } from "@next/font/google";
-import styles from "./page.module.css";
 const inter = Inter({ subsets: ["latin"] });
 export default function Home() {
   return (
