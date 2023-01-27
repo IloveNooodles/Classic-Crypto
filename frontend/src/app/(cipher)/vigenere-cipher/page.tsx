@@ -14,24 +14,30 @@ export default function Home() {
         </div>
         <div className={styles.container}>
           <form className={styles.form}>
-            <label htmlFor="encrypt">Encrypt</label>
-            <textarea name="encrypt" className={styles.input} />
-            <label htmlFor="decrypt">decrypt</label>
-            <textarea name="decrypt" className={styles.input} />
-            <label htmlFor="key">key</label>
-            <textarea name="key" className={styles.input} />
+            <label htmlFor="input">Input</label>
+            <textarea name="input" className={styles.input} />
+            <label htmlFor="Key">key</label>
+            <textarea name="Key" className={styles.input} />
+            <label htmlFor="result">decrypt</label>
+            <textarea name="result" className={styles.input} />
           </form>
           <div className={styles.btn_container}>
-            <button type="submit">
+            <button type="submit" className={styles.btn}>
               <a href="favicon.ico" download="result.txt">
                 Download file
               </a>
             </button>
             <label htmlFor="file">Upload File</label>
             <input type="file" name="file" />
-            <button type="button">Encrypt plaintext</button>
-            <button type="button">Decrypt ciphertext</button>
-            <button type="button">Clear</button>
+            <button type="button" className={styles.btn}>
+              Encrypt plaintext
+            </button>
+            <button type="button" className={styles.btn}>
+              Decrypt ciphertext
+            </button>
+            <button type="button" className={styles.btn}>
+              Clear
+            </button>
           </div>
         </div>
       </div>
