@@ -1,3 +1,5 @@
+@import "mixins";
+
 .main {
   display: flex;
   flex-direction: column;
@@ -10,8 +12,8 @@
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  align-items: center;
   min-height: inherit;
+  width: 100%;
 
   &::before {
     background: var(--secondary-glow);
@@ -62,6 +64,14 @@
   display: flex;
   justify-content: center;
   gap: 1rem;
+
+  @include tablet-min {
+    justify-content: space-evenly;
+  }
+  @include desktop-min {
+    justify-content: center;
+    gap: 5rem;
+  }
 }
 
 .key-wrapper {
@@ -89,10 +99,50 @@
   resize: none;
   height: 12rem;
   padding: 0.5rem;
+
+  @include tablet-min {
+    width: 25rem;
+  }
+
+  @include desktop-min {
+    min-width: 40rem;
+    height: 15rem;
+  }
+}
+
+.menu {
+  display: none;
+  width: fit-content;
+  @include desktop-min {
+    display: block;
+  }
+}
+
+.card-menu {
+  padding: 1rem 2.5rem;
+  background: rgba(var(--card-rgb), 0.1);
+  border: 1px solid rgba(var(--card-border-rgb), 0.15);
+
+  h2 {
+    margin-bottom: 0.5rem;
+  }
+
+  span {
+    display: inline-block;
+    transition: transform 200ms;
+  }
+
+  p {
+    display: none;
+  }
 }
 
 .btn {
   padding: 1rem;
+
+  @include desktop-min {
+    width: 13rem;
+  }
 }
 
 .key {
@@ -117,5 +167,9 @@
   p {
     text-align: center;
     padding-bottom: 1rem;
+  }
+  @include desktop-min {
+    width: 13rem;
+    height: 13rem;
   }
 }
