@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from encryption.vignere import Vignere
+from encryption.hill import Hill
 app = Flask(__name__)
 
 # Vignere decryption or encryption
@@ -78,8 +79,29 @@ def affine():
 def playfair():
     return "Hello World!"
 
-@app.route("/hill")
+
+# Hill cipher decryption or encryption
+# Args:
+# 1. size = matrix size
+# 1. key = cipher key
+# 2. text = text to encrypt or decrypt
+# 3. encrypt = set to "True" for encryption, decryption otherwise
+# Returns:
+# 1. Result: decryption/encryption result
+
+@app.route("/hill", methods = ['POST'])
 def hill():
-    return "Hello World!"
+    size = request.form['size']
+    key = request.form['key']
+    text = request.form['text']
+    encrypt = request.form['encrypt'] == "True"
+    try:
+        cipher = Hill(key, int(size))
+        if encrypt:
+            return jsonify({"Result": cipher.encrypt(text)})
+        else:
+            return jsonify({"Result": cipher.decrypt(text)})
+    except:
+        return jsonify({"Error": "Invalid key or text"})
 
 app.run("localhost", port=8000)
