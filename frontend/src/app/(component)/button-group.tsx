@@ -44,7 +44,15 @@ export default function ButtonGroup() {
           <p>File uploaded!</p>
           <p ref={infoRef}>File uploaded!</p>
         </div>
-
+        <button
+          type="submit"
+          className={styles.btn}
+          onClick={() => {
+            setFile(null);
+          }}
+        >
+          Clear
+        </button>
         <button type="submit" className={styles.btn}>
           <a href="favicon.ico" download="result.txt">
             Download file
@@ -55,9 +63,6 @@ export default function ButtonGroup() {
         </button>
         <button type="submit" className={styles.btn}>
           Decrypt ciphertext
-        </button>
-        <button type="submit" className={styles.btn}>
-          Clear
         </button>
       </div>
     </>

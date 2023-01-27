@@ -1,6 +1,6 @@
 "use client";
-
 import ButtonGroup from "@/app/(component)/button-group";
+import Key from "@/app/(component)/key";
 import styles from "@/styles/Cipher.module.scss";
 import { description } from "@/utils/desc";
 import { Inter } from "@next/font/google";
@@ -22,8 +22,9 @@ export default function Home() {
           <form className={styles.form}>
             <label htmlFor="input">Input</label>
             <textarea name="input" className={styles.input} />
-            <label htmlFor="Key">Key</label>
-            <textarea name="Key" className={`${styles.input} ${styles.key}`} />
+            <Key type="Number"/>
+            {/* <label htmlFor="Key">Key</label>
+            <textarea name="Key" className={`${styles.input} ${styles.key}`} /> */}
             <label htmlFor="result">Result</label>
             <textarea name="result" className={styles.input} />
             <input type="hidden" name="vignere" />

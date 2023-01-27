@@ -64,6 +64,20 @@
   gap: 1rem;
 }
 
+.key-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  justify-content: center;
+  padding: 1rem 0;
+}
+
+.label-container {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
 .btn-container {
   display: flex;
   flex-direction: column;
@@ -84,6 +98,12 @@
 .key {
   height: 4rem;
   resize: none;
+}
+
+.affine {
+  resize: none;
+  width: 8rem;
+  padding: 0.5rem;
 }
 
 .file-upload {
