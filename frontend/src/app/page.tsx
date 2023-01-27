@@ -1,9 +1,7 @@
-import { Inter } from "@next/font/google";
+import { inter } from "@/utils/fonts";
 import Link from "next/link";
-import { description, listOfCipher } from "../utils/desc";
+import { description, listOfCipher } from "@/utils/desc";
 import styles from "./page.module.css";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   return (
