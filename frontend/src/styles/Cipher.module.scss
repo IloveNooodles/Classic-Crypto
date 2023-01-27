@@ -60,14 +60,15 @@
 
 .container {
   display: flex;
-  flex-wrap: wrap;
-  gap: 2rem;
+  justify-content: center;
+  gap: 1rem;
 }
 
-.btn_container {
+.btn-container {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  width: 10rem;
 }
 
 .input {
@@ -78,4 +79,26 @@
 
 .btn {
   padding: 1rem;
+}
+
+.key {
+  height: 4rem;
+  resize: none;
+}
+
+.file-upload {
+  border: 1px dashed white;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-direction: column;
+  padding: 2rem;
+  cursor: pointer;
+  p {
+    text-align: center;
+    padding-bottom: 1rem;
+  }
+}
+
+#file {
 }
