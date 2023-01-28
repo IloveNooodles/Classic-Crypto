@@ -2,9 +2,14 @@ from datetime import datetime
 
 from encryption.hill import Hill
 from encryption.vignere import Vignere
-from flask import Flask, jsonify, request, send_file
+from flask import Flask, jsonify, request, send_from_directory
 
 app = Flask(__name__)
+
+# General Setting
+UPLOAD_FOLDER = "uploads"
+ALLOWED_EXTENSION = "txt"
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 # Health check
 @app.route("/", methods=["GET"])
@@ -20,36 +25,36 @@ def health_check():
 # 3. encrypt = set to "True" for encryption, decryption otherwise
 # Returns:
 # 1. Result: decryption/encryption result
-
-
 @app.route("/vignere", methods=["POST"])
 def vignere():
-    keyToCheck = ["key", "text", "type", "encrypt"]
-    data = request.get_json()
-    print(data)
+    keyToCheck = ["key", "text", "encrypt"]
+    data = request.form
     for key in keyToCheck:
-        if key not in data.keys():
+        if key not in request.form.keys():
             return jsonify({"Error": "Invalid request body"})
 
     key = data["key"]
     text = data["text"]
-    type = data["type"]
     encrypt = data["encrypt"] == True
+    if "file" in request.files:
+        # process
+        pass
 
     # Sanitize the type file
     if type != "Text" and type != "File":
         return jsonify({"Result": "Invalid type"})
+
     try:
         cipher = Vignere(key)
         if encrypt:
             if type == "Text":
                 return jsonify({"Result": cipher.encrypt(text)})
 
-            return send_file("a.txt")
+            return send_from_directory("static", "a.txt", as_attachment=True)
         else:
             return jsonify({"Result": cipher.decrypt(text)})
-    except Exception as e:
-        return jsonify({"Error": e.with_traceback(None)})
+    except:
+        return jsonify({"Error": "Key or text error"})
 
 
 # Auto-Vignere decryption or encryption
