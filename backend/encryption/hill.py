@@ -1,11 +1,13 @@
 import string
 import numpy as np
+import math
 from encryption.sanitize import Sanitize
 
 class Hill:
-    def __init__(self, key: str, size: int):
+    def __init__(self, key: str):
         key = Sanitize.sanitize_alphabet(key)
-        assert(len(key) == size * size)
+        size = round(math.sqrt(key))
+        assert(size*size == key)
         self._charset = string.ascii_uppercase
         self._key = np.zeros(shape=(size,size))
         self._size = size

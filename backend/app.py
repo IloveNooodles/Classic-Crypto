@@ -112,7 +112,6 @@ def playfair():
 
 # Hill cipher decryption or encryption
 # Args:
-# 1. size = matrix size
 # 1. key = cipher key
 # 2. text = text to encrypt or decrypt
 # 3. encrypt = set to "True" for encryption, decryption otherwise
@@ -122,12 +121,11 @@ def playfair():
 
 @app.route("/hill", methods=["POST"])
 def hill():
-    size = request.form["size"]
     key = request.form["key"]
     text = request.form["text"]
     encrypt = request.form["encrypt"] == "True"
     try:
-        cipher = Hill(key, int(size))
+        cipher = Hill(key)
         if encrypt:
             return jsonify({"Result": cipher.encrypt(text)})
         else:
