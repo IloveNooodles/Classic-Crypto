@@ -54,7 +54,7 @@ export default function ButtonGroup() {
           Clear
         </button>
         <button type="submit" className={styles.btn}>
-          <a href="favicon.ico" download="result.txt">
+          <a href="http://127.0.0.1:5000/static/a.txt" download="result.txt">
             Download file
           </a>
         </button>
