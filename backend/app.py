@@ -3,6 +3,7 @@ from time import time_ns
 
 from encryption.hill import Hill
 from encryption.vignere import Vignere
+from encryption.playfair import Playfair
 from flask import Flask, jsonify, request, send_from_directory
 from werkzeug.utils import secure_filename
 
@@ -136,9 +137,27 @@ def affine():
     return "Hello World!"
 
 
-@app.route("/playfair")
+# Hill cipher decryption or encryption
+# Args:
+# 1. key = cipher key
+# 2. text = text to encrypt or decrypt
+# 3. encrypt = set to "True" for encryption, decryption otherwise
+# Returns:
+# 1. Result: decryption/encryption result
+
+@app.route("/playfair", methods=["POST"])
 def playfair():
-    return "Hello World!"
+    key = request.form["key"]
+    text = request.form["text"]
+    encrypt = request.form["encrypt"] == "True"
+    try:
+        cipher = Playfair(key)
+        if encrypt:
+            return jsonify({"Result": cipher.encrypt(text)})
+        else:
+            return jsonify({"Result": cipher.decrypt(text)})
+    except:
+        return jsonify({"Error": "Invalid key or text"})
 
 
 # Hill cipher decryption or encryption
