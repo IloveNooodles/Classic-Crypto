@@ -1,10 +1,28 @@
 from datetime import datetime
+from time import time_ns
 
 from encryption.hill import Hill
 from encryption.vignere import Vignere
-from flask import Flask, jsonify, request, send_file
+from flask import Flask, jsonify, request, send_from_directory
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
+UPLOAD_FOLDER = "static"
+ALLOWED_EXTENSION = "txt"
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() == ALLOWED_EXTENSION
+
+def write_file(filename, content):
+    newfile = filename.split(".")[0] + "_result_" + str(time_ns()) + ".txt"
+    with open(f"static/{newfile}", "w") as f:
+        f.write(content)
+
+    print(newfile)
+    return newfile
+
 
 # Health check
 @app.route("/", methods=["GET"])
@@ -13,43 +31,58 @@ def health_check():
     return jsonify({"Time": now, "Status": "Healthy"})
 
 
-# Vignere decryption or encryption
-# Args:
-# 1. key = cipher key
-# 2. text = text to encrypt or decrypt
-# 3. encrypt = set to "True" for encryption, decryption otherwise
-# Returns:
-# 1. Result: decryption/encryption result
-
-
+'''
+Vignere decryption or encryption
+ Args:
+ 1. key = cipher key
+ 2. text = text to encrypt or decrypt
+ 3. encrypt = set to "True" for encryption, decryption otherwise
+ Returns:
+ 1. Result: decryption/encryption result 
+ '''
 @app.route("/vignere", methods=["POST"])
 def vignere():
-    keyToCheck = ["key", "text", "type", "encrypt"]
-    data = request.get_json()
-    print(data)
+    keyToCheck = ["key", "text", "encrypt"]
+    data = request.form
     for key in keyToCheck:
         if key not in data.keys():
             return jsonify({"Error": "Invalid request body"})
 
     key = data["key"]
     text = data["text"]
-    type = data["type"]
     encrypt = data["encrypt"] == True
 
-    # Sanitize the type file
-    if type != "Text" and type != "File":
-        return jsonify({"Result": "Invalid type"})
+    # Process file
+    if "file" in request.files:
+        file = request.files["file"]
+        if file.filename == "":
+            return jsonify({"Error": "Filename cannot be empty"})
+        
+        if not allowed_file(file.filename):
+            return jsonify({"Error": "Only txt files allowed"})
+        
+        file_content = file.read().decode().strip().upper()
+        try:
+          cipher = Vignere(key)
+          if encrypt:
+              result = cipher.encrypt(file_content)
+          else:
+              result = cipher.decrypt(file_content)
+        except Exception as e:
+            return jsonify({"Error": "Key or text error"})
+        
+        newfile = write_file(file.filename, result)
+        # open file
+        return send_from_directory(UPLOAD_FOLDER, newfile, as_attachment=True)
+
     try:
         cipher = Vignere(key)
         if encrypt:
-            if type == "Text":
-                return jsonify({"Result": cipher.encrypt(text)})
-
-            return send_file("a.txt")
+            return jsonify({"Result": cipher.encrypt(text)})
         else:
             return jsonify({"Result": cipher.decrypt(text)})
     except Exception as e:
-        return jsonify({"Error": e.with_traceback(None)})
+        return jsonify({"Error": "Key or text error"})
 
 
 # Auto-Vignere decryption or encryption
@@ -59,8 +92,6 @@ def vignere():
 # 3. encrypt = set to "True" for encryption, decryption otherwise
 # Returns:
 # 1. Result: decryption/encryption result
-
-
 @app.route("/auto_vignere", methods=["POST"])
 def auto_vignere():
     key = request.form["key"]

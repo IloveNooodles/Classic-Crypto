@@ -1,5 +1,7 @@
 import string
+
 from encryption.sanitize import Sanitize
+
 
 class Vignere:
     def __init__(self, key: str):
@@ -13,7 +15,6 @@ class Vignere:
 
         # input sanitazion
         text = Sanitize.sanitize_alphabet(plaintext)
-
         # encryption
         ciphertext = ""
         cur = 0
