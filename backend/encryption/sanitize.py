@@ -1,5 +1,6 @@
 import string
 
+
 class Sanitize:
     def __init__():
         pass
