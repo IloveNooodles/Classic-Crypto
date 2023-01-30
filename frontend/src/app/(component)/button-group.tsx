@@ -32,9 +32,11 @@ export default function ButtonGroup({ ...props }: RootForm) {
       method: "POST",
       body: body,
     });
-    const res = await data.json();
-    console.log(res.Result);
-    if (result) result.current!.value = res.Result;
+    try {
+      const res = await data.json();
+      console.log(res.Result);
+      if (result) result.current!.value = res.Result;
+    } catch {}
   }
 
   return (
@@ -84,7 +86,10 @@ export default function ButtonGroup({ ...props }: RootForm) {
           Clear
         </button>
         <button type="button" className={styles.btn}>
-          <a href="http://127.0.0.1:5000/static/a.txt" download="result.txt">
+          <a
+            href={`${BASE_URL}/static/test_result_1675097024355445977txt`}
+            download="result.txt"
+          >
             Download file
           </a>
         </button>

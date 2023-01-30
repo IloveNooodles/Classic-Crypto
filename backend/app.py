@@ -17,7 +17,10 @@ ALLOWED_EXTENSION = "txt"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 def get_file_extension(filename: str):
-    return filename.rsplit('.', 1)[1].lower()
+  try:
+    return "." + filename.rsplit('.', 1)[1].lower()
+  except:
+    return ""
 
 def allowed_file(filename: str):
     return '.' in filename and \
