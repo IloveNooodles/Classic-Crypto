@@ -4,6 +4,8 @@ import { RootForm } from "@/utils/type";
 import { faUpload } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ChangeEvent, useRef, useState } from "react";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function ButtonGroup({ ...props }: RootForm) {
   const fileRef = useRef<HTMLInputElement>(null);
@@ -21,9 +23,9 @@ export default function ButtonGroup({ ...props }: RootForm) {
     body.append("m", cipherKey?.m?.toUpperCase() || "");
     body.append("text", text?.current?.value.toUpperCase() || "");
     if (isEncrypt) {
-      body.append("encrypt", "true");
+      body.append("encrypt", "True");
     } else {
-      body.append("encrypt", "false");
+      body.append("encrypt", "False");
     }
 
     console.log(File, cipherKey, text?.current?.value);
@@ -34,8 +36,18 @@ export default function ButtonGroup({ ...props }: RootForm) {
     });
     try {
       const res = await data.json();
-      console.log(res.Result);
-      if (result) result.current!.value = res.Result;
+      console.log(res);
+      toast(res.message);
+      if (res.type == "text"){
+        if (result) result.current!.value = res.result;
+      }
+      else if (res.type == "filename"){
+        console.log(res.result)
+        const download = document.getElementById("download_link");
+        download?.setAttribute('href', `${BASE_URL}/static/${res.result}`);
+        download?.setAttribute('download', 'result');
+        download?.setAttribute('target', '_blank');
+      }
     } catch {}
   }
 
@@ -86,9 +98,7 @@ export default function ButtonGroup({ ...props }: RootForm) {
           Clear
         </button>
         <button type="button" className={styles.btn}>
-          <a
-            href={`${BASE_URL}/static/test_result_1675097024355445977txt`}
-            download="result.txt"
+          <a id = "download_link"
           >
             Download file
           </a>
@@ -101,6 +111,7 @@ export default function ButtonGroup({ ...props }: RootForm) {
             handleSubmit(true);
           }}
         >
+        <ToastContainer/>
           Encrypt plaintext
         </button>
         <button
@@ -111,6 +122,7 @@ export default function ButtonGroup({ ...props }: RootForm) {
             handleSubmit(false);
           }}
         >
+        <ToastContainer/>
           Decrypt ciphertext
         </button>
       </div>
