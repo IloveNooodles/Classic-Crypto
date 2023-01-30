@@ -19,10 +19,15 @@ def allowed_file(filename):
 
 def write_file(filename, content):
     newfile = filename.split(".")[0] + "_result_" + str(time_ns()) + ".txt"
-    with open(f"static/{newfile}", "w") as f:
-        f.write(content)
+    if type(content) is str:
+        with open(f"static/{newfile}", "w+") as f:
+            f.write(content)
+    else:
+        with open(f"static/{newfile}", "wb+") as f:
+            f.write(content)
 
     return newfile
+
 
 def check_request(data):
     keyToCheck = ["key", "encrypt"]
