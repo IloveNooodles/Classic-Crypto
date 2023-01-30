@@ -43,6 +43,9 @@ def make_response(result, message="Cipher successful", type = "text"):
 def make_error(message, result="", type="error"):
     return jsonify({"result":result, "message": message, "type": type})
 
+def send_file(result, message="Cipher successful", type="filename"):
+    return jsonify({"result":result, "message": message, "type": type})
+
 
 def check_request(data):
     keyToCheck = ["key", "encrypt"]
@@ -97,7 +100,7 @@ def vignere():
         
         newfile = write_file(file.filename, result)
         # open file
-        return send_from_directory(UPLOAD_FOLDER, newfile, as_attachment=True)
+        return send_file(newfile)
     elif "text" in data:
         text = data['text']
         try:
@@ -149,7 +152,7 @@ def auto_vignere():
         
         newfile = write_file(file.filename, result)
         # open file
-        return send_from_directory(UPLOAD_FOLDER, newfile, as_attachment=True)
+        return send_file(newfile)
     elif "text" in data:
         text = data['text']
         try:
@@ -199,15 +202,15 @@ def extended_vignere():
         
         newfile = write_file(file.filename, result)
         # open file
-        return send_from_directory(UPLOAD_FOLDER, newfile, as_attachment=True)
+        return send_file(newfile)
     elif "text" in data:
         text = bytes.fromhex(request.form["text"])
         try:
             cipher = Vignere(key)
             if encrypt:
-                return jsonify({"Result": cipher.encrypt_extended(text).hex()})
+                return make_response(cipher.encrypt_extended(text).hex())
             else:
-                return jsonify({"Result": cipher.decrypt_extended(text).hex()})
+                return make_response(cipher.decrypt_extended(text).hex())
         except:
             return make_error("Key or text error")
     else:
@@ -256,7 +259,7 @@ def affine():
         
         newfile = write_file(file.filename, result)
         # open file
-        return send_from_directory(UPLOAD_FOLDER, newfile, as_attachment=True)
+        return send_file(newfile)
     
     if "text" not in data.keys():
         return make_error("Invalid request body")
@@ -310,7 +313,7 @@ def playfair():
         
         newfile = write_file(file.filename, result)
         # open file
-        return send_from_directory(UPLOAD_FOLDER, newfile, as_attachment=True)
+        return send_file(newfile)
     elif "text" in data:
         try:
             cipher = Playfair(key)
@@ -362,7 +365,7 @@ def hill():
         
         newfile = write_file(file.filename, result)
         # open file
-        return send_from_directory(UPLOAD_FOLDER, newfile, as_attachment=True)
+        return send_file(newfile)
     elif "text" in data:
         try:
             cipher = Hill(key)
