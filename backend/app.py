@@ -166,9 +166,6 @@ def extended_vignere():
         if file.filename == "":
             return jsonify({"Error": "Filename cannot be empty"})
         
-        if not allowed_file(file.filename):
-            return jsonify({"Error": "Only txt files allowed"})
-        
         file_content = file.read()
         try:
           cipher = Vignere(key)
