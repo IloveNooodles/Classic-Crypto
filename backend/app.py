@@ -65,7 +65,7 @@ def vignere():
         return jsonify({"Error": "Invalid request body"})
 
     key = data["key"]
-    encrypt = data["encrypt"] == True
+    encrypt = data["encrypt"].upper() == "True".upper()
 
     # Process file
     if "file" in request.files:
@@ -117,7 +117,7 @@ def auto_vignere():
         return jsonify({"Error": "Invalid request body"})
 
     key = data["key"]
-    encrypt = data["encrypt"] == True
+    encrypt = data["encrypt"].upper() == "True".upper()
 
     # Process file
     if "file" in request.files:
@@ -279,7 +279,7 @@ def playfair():
         return jsonify({"Error": "Invalid request body"})
 
     key = data["key"]
-    encrypt = data["encrypt"] == True
+    encrypt = data["encrypt"].upper() == "True".upper()
     # Process file
     if "file" in request.files:
         file = request.files["file"]
@@ -331,7 +331,7 @@ def hill():
         return jsonify({"Error": "Invalid request body"})
 
     key = data["key"]
-    encrypt = data["encrypt"] == True
+    encrypt = data["encrypt"].upper() == "True".upper()
     # Process file
     if "file" in request.files:
         file = request.files["file"]
