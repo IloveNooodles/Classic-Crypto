@@ -98,6 +98,28 @@ def auto_vignere():
     key = request.form["key"]
     text = request.form["text"]
     encrypt = request.form["encrypt"] == "True"
+    # Process file
+    if "file" in request.files:
+        file = request.files["file"]
+        if file.filename == "":
+            return jsonify({"Error": "Filename cannot be empty"})
+        
+        if not allowed_file(file.filename):
+            return jsonify({"Error": "Only txt files allowed"})
+        
+        file_content = file.read().decode().strip().upper()
+        try:
+          cipher = Vignere(key)
+          if encrypt:
+              result = cipher.encrypt_auto(file_content)
+          else:
+              result = cipher.decrypt_auto(file_content)
+        except Exception as e:
+            return jsonify({"Error": "Key or text error"})
+        
+        newfile = write_file(file.filename, result)
+        # open file
+        return send_from_directory(UPLOAD_FOLDER, newfile, as_attachment=True)
     try:
         cipher = Vignere(key)
         if encrypt:
@@ -108,7 +130,7 @@ def auto_vignere():
         return jsonify({"Error": "Invalid key or text"})
 
 
-# Auto-Vignere decryption or encryption
+# Extended-Vignere decryption or encryption
 # Args:
 # 1. key = cipher key
 # 2. text = text to encrypt or decrypt, in hex
@@ -122,6 +144,29 @@ def extended_vignere():
     key = request.form["key"]
     text = bytes.fromhex(request.form["text"])
     encrypt = request.form["encrypt"] == "True"
+    # Process file
+    if "file" in request.files:
+        file = request.files["file"]
+        if file.filename == "":
+            return jsonify({"Error": "Filename cannot be empty"})
+        
+        if not allowed_file(file.filename):
+            return jsonify({"Error": "Only txt files allowed"})
+        
+        file_content = file.read().decode().strip().upper()
+        try:
+          cipher = Vignere(key)
+          if encrypt:
+              result = cipher.encrypt_extended(file_content)
+          else:
+              result = cipher.decrypt_extended(file_content)
+        except Exception as e:
+            return jsonify({"Error": "Key or text error"})
+        
+        newfile = write_file(file.filename, result)
+        # open file
+        return send_from_directory(UPLOAD_FOLDER, newfile, as_attachment=True)
+    
     try:
         cipher = Vignere(key)
         if encrypt:
@@ -204,6 +249,28 @@ def playfair():
     key = request.form["key"]
     text = request.form["text"]
     encrypt = request.form["encrypt"] == "True"
+    # Process file
+    if "file" in request.files:
+        file = request.files["file"]
+        if file.filename == "":
+            return jsonify({"Error": "Filename cannot be empty"})
+        
+        if not allowed_file(file.filename):
+            return jsonify({"Error": "Only txt files allowed"})
+        
+        file_content = file.read().decode().strip().upper()
+        try:
+          cipher = Playfair(key)
+          if encrypt:
+              result = cipher.encrypt(file_content)
+          else:
+              result = cipher.decrypt(file_content)
+        except Exception as e:
+            return jsonify({"Error": "Key or text error"})
+        
+        newfile = write_file(file.filename, result)
+        # open file
+        return send_from_directory(UPLOAD_FOLDER, newfile, as_attachment=True)
     try:
         cipher = Playfair(key)
         if encrypt:
@@ -228,6 +295,28 @@ def hill():
     key = request.form["key"]
     text = request.form["text"]
     encrypt = request.form["encrypt"] == "True"
+    # Process file
+    if "file" in request.files:
+        file = request.files["file"]
+        if file.filename == "":
+            return jsonify({"Error": "Filename cannot be empty"})
+        
+        if not allowed_file(file.filename):
+            return jsonify({"Error": "Only txt files allowed"})
+        
+        file_content = file.read().decode().strip().upper()
+        try:
+          cipher = Hill(key)
+          if encrypt:
+              result = cipher.encrypt(file_content)
+          else:
+              result = cipher.decrypt(file_content)
+        except Exception as e:
+            return jsonify({"Error": "Key or text error"})
+        
+        newfile = write_file(file.filename, result)
+        # open file
+        return send_from_directory(UPLOAD_FOLDER, newfile, as_attachment=True)
     try:
         cipher = Hill(key)
         if encrypt:
