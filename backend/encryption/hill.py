@@ -55,7 +55,9 @@ class Hill:
         # input sanitazion
         assert(Sanitize.check_alphabet(ciphertext))
         text = Sanitize.remove_whitespace(ciphertext)
-        assert(len(ciphertext) % self._size == 0)
+        if len(text) % self._size != 0:
+            new_size = len(text) - len(text) % self._size
+            text = text[:new_size]
 
         # decryption
         plaintext =  ""
