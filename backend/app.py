@@ -183,7 +183,7 @@ def extended_vignere():
         return make_error("Invalid request body")
     
     key = request.form["key"]
-    encrypt = request.form["encrypt"] == "True"
+    encrypt = request.form["encrypt"].upper() == "True".upper()
     # Process file
     if "file" in request.files:
         file = request.files["file"]
