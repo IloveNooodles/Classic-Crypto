@@ -1,7 +1,6 @@
 import string
 
-# from encryption.sanitize import Sanitize
-from sanitize import Sanitize
+from encryption.sanitize import Sanitize
 
 '''
 X is the character
@@ -49,7 +48,7 @@ class Affine:
         
         return ciphertext
     
-    def decrpyt(self, ciphertext: string):
+    def decrypt(self, ciphertext: string):
         # Sanitize input
         assert(Sanitize.check_alphabet(ciphertext))
         text = Sanitize.remove_whitespace(ciphertext)

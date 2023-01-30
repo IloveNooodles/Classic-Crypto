@@ -1,9 +1,10 @@
 from datetime import datetime
 from time import time_ns
 
+from encryption.affine import Affine
 from encryption.hill import Hill
-from encryption.vignere import Vignere
 from encryption.playfair import Playfair
+from encryption.vignere import Vignere
 from flask import Flask, jsonify, request, send_from_directory
 from werkzeug.utils import secure_filename
 
@@ -21,7 +22,6 @@ def write_file(filename, content):
     with open(f"static/{newfile}", "w") as f:
         f.write(content)
 
-    print(newfile)
     return newfile
 
 
@@ -131,10 +131,65 @@ def extended_vignere():
     except:
         return jsonify({"Error": "Invalid key or text"})
 
-
-@app.route("/affine")
+''' 
+Hill cipher decryption or encryption
+Args:
+1. m = cipher multiplicative
+2. b = cipher additive
+3. text = text to encrypt or decrypt
+4. encrypt = set to "True" for encryption, decryption otherwise
+Returns:@app.route("/affine", methods=["POSDT
+1. Result: decryption/encryption result 
+'''
+@app.route("/affine", methods=["POST"])
 def affine():
-    return "Hello World!"
+    keyToCheck = ["m", "b", "encrypt"]
+    data = request.form
+    for key in keyToCheck:
+        if key not in data.keys():
+            return jsonify({"Error": "Invalid request body"})
+
+    m = int(data["m"])
+    b = int(data["b"])
+    encrypt = data["encrypt"].upper() == "True".upper()
+
+    # Process file
+    if "file" in request.files:
+        file = request.files["file"]
+        if file.filename == "":
+            return jsonify({"Error": "Filename cannot be empty"})
+        
+        if not allowed_file(file.filename):
+            return jsonify({"Error": "Only txt files allowed"})
+        
+        file_content = file.read().decode().strip().upper()
+        try:
+          cipher = Affine(m, b)
+          if encrypt:
+              result = cipher.encrypt(file_content)
+          else:
+              result = cipher.decrypt(file_content)
+        except Exception as e:
+            return jsonify({"Error": "Key is possibly doesn't coprime with 26 or text error"})
+        
+        newfile = write_file(file.filename, result)
+        # open file
+        return send_from_directory(UPLOAD_FOLDER, newfile, as_attachment=True)
+    
+    if "text" not in data.keys():
+        return jsonify({"Error": "Invalid request body"})
+
+    # Process text
+    text = data["text"]
+
+    try:
+        cipher = Affine(m, b)
+        if encrypt:
+            return jsonify({"Result": cipher.encrypt(text)})
+        else:
+            return jsonify({"Result": cipher.decrypt(text)})
+    except Exception as e:
+        return jsonify({"Error": "Key or text error"})
 
 
 # Hill cipher decryption or encryption
@@ -144,7 +199,6 @@ def affine():
 # 3. encrypt = set to "True" for encryption, decryption otherwise
 # Returns:
 # 1. Result: decryption/encryption result
-
 @app.route("/playfair", methods=["POST"])
 def playfair():
     key = request.form["key"]
