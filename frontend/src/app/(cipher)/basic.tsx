@@ -2,21 +2,24 @@
 import ButtonGroup from "@/app/(component)/button-group";
 import Key from "@/app/(component)/key";
 import styles from "@/styles/Cipher.module.scss";
-import { description, listOfCipher } from "@/utils/desc";
+import { LIST_URL, description, listOfCipher } from "@/utils/desc";
 import { inter } from "@/utils/fonts";
+import { KeyOptions } from "@/utils/type";
 import { useRef, useState } from "react";
 export default function Template({
   name,
   index,
   keyType,
+  url,
 }: {
   name: string;
   index: number;
   keyType: "Text" | "Number";
+  url?: string;
 }) {
-  const fileRef = useRef<HTMLInputElement>(null);
-  const infoRef = useRef<HTMLParagraphElement>(null);
-  const [File, setFile] = useState<File | null>(null);
+  const textRef = useRef<HTMLTextAreaElement>(null);
+  const resultRef = useRef<HTMLTextAreaElement>(null);
+  const [key, setKey] = useState<KeyOptions>({});
 
   return (
     <main className={styles.main}>
@@ -25,25 +28,32 @@ export default function Template({
           <code className={styles.title}>{listOfCipher[index]}</code>
           <p className={inter.className}>{description[index]}</p>
         </div>
-        <div className={styles.container}>
-          <form className={styles.form}>
-            <label htmlFor="input">Input</label>
+        <form className={styles.container} encType="multipart/form-data">
+          <div className={styles.form}>
+            <label htmlFor="text">Input</label>
             <textarea
-              name="input"
+              name="text"
               className={styles.input}
               placeholder="Place your input here..."
+              ref={textRef}
             />
-            <Key type={keyType} />
+            <Key type={keyType} cipherKey={key} setKey={setKey} />
             <label htmlFor="result">Result</label>
             <textarea
               name="result"
               className={styles.input}
               placeholder="The result will come here..."
+              ref={resultRef}
             />
             <input type="hidden" name={name} />
-          </form>
-          <ButtonGroup />
-        </div>
+          </div>
+          <ButtonGroup
+            url={LIST_URL[index]}
+            text={textRef}
+            result={resultRef}
+            cipherKey={key}
+          />
+        </form>
       </div>
     </main>
   );

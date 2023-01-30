@@ -6,19 +6,25 @@ from encryption.hill import Hill
 from encryption.playfair import Playfair
 from encryption.vignere import Vignere
 from flask import Flask, jsonify, request, send_from_directory
+from flask_cors import CORS
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
+CORS(app)
+
 UPLOAD_FOLDER = "static"
 ALLOWED_EXTENSION = "txt"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
-def allowed_file(filename):
+def get_file_extension(filename: str):
+    return filename.rsplit('.', 1)[1].lower()
+
+def allowed_file(filename: str):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() == ALLOWED_EXTENSION
 
 def write_file(filename, content):
-    newfile = filename.split(".")[0] + "_result_" + str(time_ns()) + ".txt"
+    newfile = filename.split(".")[0] + "_result_" + str(time_ns()) + get_file_extension(filename)
     if type(content) is str:
         with open(f"static/{newfile}", "w+") as f:
             f.write(content)
@@ -106,6 +112,7 @@ def vignere():
 @app.route("/auto_vignere", methods=["POST"])
 def auto_vignere():
     data = request.form
+    print(data)
     if not check_request(data):
         return jsonify({"Error": "Invalid request body"})
 
