@@ -34,6 +34,12 @@ def write_file(filename, content):
 
     return newfile
 
+def make_response(result, message="Cipher successful", type = "text"):
+    return jsonify({"result":result, "message": message, "type": type})
+
+def make_error(message, result="", type="error"):
+    return jsonify({"result":result, "message": message, "type": type})
+
 
 def check_request(data):
     keyToCheck = ["key", "encrypt"]
@@ -62,7 +68,7 @@ Vignere decryption or encryption
 def vignere():
     data = request.form
     if not check_request(data):
-        return jsonify({"Error": "Invalid request body"})
+        return make_error("Invalid request body")
 
     key = data["key"]
     encrypt = data["encrypt"].upper() == "True".upper()
@@ -71,10 +77,10 @@ def vignere():
     if "file" in request.files:
         file = request.files["file"]
         if file.filename == "":
-            return jsonify({"Error": "Filename cannot be empty"})
+            return make_error("Filename cannot be empty")
         
         if not allowed_file(file.filename):
-            return jsonify({"Error": "Only txt files allowed"})
+            return make_error("Only txt files allowed")
         
         file_content = file.read().decode().strip().upper()
         try:
@@ -84,7 +90,7 @@ def vignere():
           else:
               result = cipher.decrypt(file_content)
         except Exception as e:
-            return jsonify({"Error": "Key or text error"})
+            return make_error("Key or text error")
         
         newfile = write_file(file.filename, result)
         # open file
@@ -94,13 +100,13 @@ def vignere():
         try:
             cipher = Vignere(key)
             if encrypt:
-                return jsonify({"Result": cipher.encrypt(text)})
+                return make_response(cipher.encrypt(text))
             else:
-                return jsonify({"Result": cipher.decrypt(text)})
+                return make_response(cipher.decrypt(text))
         except Exception as e:
-            return jsonify({"Error": "Key or text error"})
+            return make_error("Key or text error")
     else:
-        return jsonify({"Error": "Invalid request body"})
+        return make_error("Invalid request body")
 
 # Auto-Vignere decryption or encryption
 # Args:
@@ -114,7 +120,7 @@ def auto_vignere():
     data = request.form
     print(data)
     if not check_request(data):
-        return jsonify({"Error": "Invalid request body"})
+        return make_error("Invalid request body")
 
     key = data["key"]
     encrypt = data["encrypt"].upper() == "True".upper()
@@ -123,10 +129,10 @@ def auto_vignere():
     if "file" in request.files:
         file = request.files["file"]
         if file.filename == "":
-            return jsonify({"Error": "Filename cannot be empty"})
+            return make_error("Filename cannot be empty")
         
         if not allowed_file(file.filename):
-            return jsonify({"Error": "Only txt files allowed"})
+            return make_error("Only txt files allowed")
         
         file_content = file.read().decode().strip().upper()
         try:
@@ -136,7 +142,7 @@ def auto_vignere():
           else:
               result = cipher.decrypt_auto(file_content)
         except Exception as e:
-            return jsonify({"Error": "Key or text error"})
+            return make_error("Key or text error")
         
         newfile = write_file(file.filename, result)
         # open file
@@ -146,13 +152,13 @@ def auto_vignere():
         try:
             cipher = Vignere(key)
             if encrypt:
-                return jsonify({"Result": cipher.encrypt_auto(text)})
+                return make_response(cipher.encrypt_auto(text))
             else:
-                return jsonify({"Result": cipher.decrypt_auto(text)})
+                return make_response(cipher.decrypt_auto(text))
         except:
-            return jsonify({"Error": "Invalid key or text"})
+            return make_error("Key or text error")
     else:
-        return jsonify({"Error": "Invalid request body"})
+        return make_error("Invalid request body")
 
 
 # Extended-Vignere decryption or encryption
@@ -168,7 +174,7 @@ def auto_vignere():
 def extended_vignere():
     data = request.form
     if not check_request(data):
-        return jsonify({"Error": "Invalid request body"})
+        return make_error("Invalid request body")
     
     key = request.form["key"]
     encrypt = request.form["encrypt"] == "True"
@@ -176,7 +182,7 @@ def extended_vignere():
     if "file" in request.files:
         file = request.files["file"]
         if file.filename == "":
-            return jsonify({"Error": "Filename cannot be empty"})
+            return make_error("Filename cannot be empty")
         
         file_content = file.read()
         try:
@@ -186,7 +192,7 @@ def extended_vignere():
           else:
               result = cipher.decrypt_extended(file_content)
         except Exception as e:
-            return jsonify({"Error": "Key or text error"})
+            return make_error("Key or text error")
         
         newfile = write_file(file.filename, result)
         # open file
@@ -200,9 +206,9 @@ def extended_vignere():
             else:
                 return jsonify({"Result": cipher.decrypt_extended(text).hex()})
         except:
-            return jsonify({"Error": "Invalid key or text"})
+            return make_error("Key or text error")
     else:
-        return jsonify({"Error": "Invalid request body"})
+        return make_error("Invalid request body")
 
 ''' 
 Hill cipher decryption or encryption
@@ -220,7 +226,7 @@ def affine():
     data = request.form
     for key in keyToCheck:
         if key not in data.keys():
-            return jsonify({"Error": "Invalid request body"})
+            return make_error("Invalid request body")
 
     m = int(data["m"])
     b = int(data["b"])
@@ -230,10 +236,10 @@ def affine():
     if "file" in request.files:
         file = request.files["file"]
         if file.filename == "":
-            return jsonify({"Error": "Filename cannot be empty"})
+            return make_error("Filename cannot be empty")
         
         if not allowed_file(file.filename):
-            return jsonify({"Error": "Only txt files allowed"})
+            return make_error("Only txt files allowed")
         
         file_content = file.read().decode().strip().upper()
         try:
@@ -243,14 +249,14 @@ def affine():
           else:
               result = cipher.decrypt(file_content)
         except Exception as e:
-            return jsonify({"Error": "Key is possibly doesn't coprime with 26 or text error"})
+            return make_error("Key is possibly doesn't coprime with 26 or text error")
         
         newfile = write_file(file.filename, result)
         # open file
         return send_from_directory(UPLOAD_FOLDER, newfile, as_attachment=True)
     
     if "text" not in data.keys():
-        return jsonify({"Error": "Invalid request body"})
+        return make_error("Invalid request body")
 
     # Process text
     text = data["text"]
@@ -258,14 +264,14 @@ def affine():
     try:
         cipher = Affine(m, b)
         if encrypt:
-            return jsonify({"Result": cipher.encrypt(text)})
+            return make_response(cipher.encrypt(text))
         else:
-            return jsonify({"Result": cipher.decrypt(text)})
+            return make_response(cipher.decrypt(text))
     except Exception as e:
-        return jsonify({"Error": "Key or text error"})
+        return make_error("Key or text error")
 
 
-# Hill cipher decryption or encryption
+# Playfair cipher decryption or encryption
 # Args:
 # 1. key = cipher key
 # 2. text = text to encrypt or decrypt
@@ -276,7 +282,7 @@ def affine():
 def playfair():
     data = request.form
     if not check_request(data):
-        return jsonify({"Error": "Invalid request body"})
+        return make_error("Invalid request body")
 
     key = data["key"]
     encrypt = data["encrypt"].upper() == "True".upper()
@@ -284,10 +290,10 @@ def playfair():
     if "file" in request.files:
         file = request.files["file"]
         if file.filename == "":
-            return jsonify({"Error": "Filename cannot be empty"})
+            return make_error("Filename cannot be empty")
         
         if not allowed_file(file.filename):
-            return jsonify({"Error": "Only txt files allowed"})
+            return make_error("Only txt files allowed")
         
         file_content = file.read().decode().strip().upper()
         try:
@@ -297,7 +303,7 @@ def playfair():
           else:
               result = cipher.decrypt(file_content)
         except Exception as e:
-            return jsonify({"Error": "Key or text error"})
+            return make_error("Key or text error")
         
         newfile = write_file(file.filename, result)
         # open file
@@ -306,13 +312,13 @@ def playfair():
         try:
             cipher = Playfair(key)
             if encrypt:
-                return jsonify({"Result": cipher.encrypt(text)})
+                return make_response(cipher.encrypt(text))
             else:
-                return jsonify({"Result": cipher.decrypt(text)})
+                return make_response(cipher.decrypt(text))
         except:
-            return jsonify({"Error": "Invalid key or text"})
+            return make_error("Key or text error")
     else:
-        return jsonify({"Error": "Invalid request body"})
+        return make_error("Invalid request body")
 
 
 # Hill cipher decryption or encryption
@@ -328,7 +334,7 @@ def playfair():
 def hill():
     data = request.form
     if not check_request(data):
-        return jsonify({"Error": "Invalid request body"})
+        return make_error("Invalid request body")
 
     key = data["key"]
     encrypt = data["encrypt"].upper() == "True".upper()
@@ -336,10 +342,10 @@ def hill():
     if "file" in request.files:
         file = request.files["file"]
         if file.filename == "":
-            return jsonify({"Error": "Filename cannot be empty"})
+            return make_error("Filename cannot be empty")
         
         if not allowed_file(file.filename):
-            return jsonify({"Error": "Only txt files allowed"})
+            return make_error("Only txt files allowed")
         
         file_content = file.read().decode().strip().upper()
         try:
@@ -349,7 +355,7 @@ def hill():
           else:
               result = cipher.decrypt(file_content)
         except Exception as e:
-            return jsonify({"Error": "Key or text error"})
+            return make_error("Key or text error")
         
         newfile = write_file(file.filename, result)
         # open file
@@ -358,13 +364,13 @@ def hill():
         try:
             cipher = Hill(key)
             if encrypt:
-                return jsonify({"Result": cipher.encrypt(text)})
+                return make_response(cipher.encrypt(text))
             else:
-                return jsonify({"Result": cipher.decrypt(text)})
+                return make_response(cipher.decrypt(text))
         except:
-            return jsonify({"Error": "Invalid key or text"})
+            return make_error("Key or text error")
     else:
-        return jsonify({"Error": "Invalid request body"})
+        return make_error("Invalid request body")
 
 
 app.run("localhost", port=8000)
