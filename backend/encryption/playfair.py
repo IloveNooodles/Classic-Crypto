@@ -1,5 +1,7 @@
 import string
+
 from encryption.sanitize import Sanitize
+
 
 class Playfair:
     def __init__(self, key: str):
