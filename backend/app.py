@@ -27,14 +27,16 @@ def allowed_file(filename: str):
            filename.rsplit('.', 1)[1].lower() == ALLOWED_EXTENSION
 
 def write_file(filename, content):
-    newfile = filename.split(".")[0] + "_result_" + str(time_ns()) + get_file_extension(filename)
     if type(content) is str:
+        newfile = filename.split(".")[0] + "_result_" + str(time_ns()) + get_file_extension(filename)
         with open(f"static/{newfile}", "w+") as f:
             f.write(content)
     else:
+        if "." in filename:
+            filename = filename.split(".")[0]
+        newfile = filename + "_result_" + str(time_ns()) +".enc"
         with open(f"static/{newfile}", "wb+") as f:
             f.write(content)
-
     return newfile
 
 def make_response(result, message="Cipher successful", type = "text"):
