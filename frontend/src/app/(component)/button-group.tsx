@@ -44,8 +44,8 @@ export default function ButtonGroup({ ...props }: RootForm) {
       else if (res.type == "filename"){
         console.log(res.result)
         const download = document.getElementById("download_link");
-        download?.setAttribute('href', `${BASE_URL}/static/${res.result}`);
-        download?.setAttribute('download', 'result');
+        download?.setAttribute('href', `${BASE_URL}static/${res.result}`);
+        download?.setAttribute('download', `result.enc`);
         download?.setAttribute('target', '_blank');
       }
     } catch {}
