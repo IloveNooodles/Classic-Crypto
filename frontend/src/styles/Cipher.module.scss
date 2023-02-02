@@ -173,3 +173,19 @@
     height: 13rem;
   }
 }
+
+.btn-format {
+  padding: 0.5rem;
+  width: auto;
+}
+
+.flex {
+  display: flex;
+  flex-direction: row;
+  gap: 0 0.5rem;
+  justify-content: space-around;
+  align-items: center;
+  @include desktop-min {
+    width: 13rem;
+  }
+}
