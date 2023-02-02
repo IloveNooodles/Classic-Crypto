@@ -219,7 +219,7 @@ def extended_vignere():
         return make_error("Invalid request body")
 
 ''' 
-Hill cipher decryption or encryption
+Affine cipher decryption or encryption
 Args:
 1. m = cipher multiplicative
 2. b = cipher additive
@@ -317,13 +317,15 @@ def playfair():
         # open file
         return send_file(newfile)
     elif "text" in data:
+        text = data['text']
         try:
             cipher = Playfair(key)
             if encrypt:
                 return make_response(cipher.encrypt(text))
             else:
                 return make_response(cipher.decrypt(text))
-        except:
+        except Exception as e:
+            print(e)
             return make_error("Key or text error")
     else:
         return make_error("Invalid request body")
@@ -370,6 +372,7 @@ def hill():
         return send_file(newfile)
     elif "text" in data:
         try:
+            text = data['text']
             cipher = Hill(key)
             if encrypt:
                 return make_response(cipher.encrypt(text))
