@@ -1,5 +1,5 @@
 import styles from "@/styles/Cipher.module.scss";
-import { BASE_URL } from "@/utils/desc";
+import { BASE_URL, SERVICE_BASE_URL } from "@/utils/desc";
 import { RootForm } from "@/utils/type";
 import { faUpload } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -50,7 +50,7 @@ export default function ButtonGroup({ ...props }: RootForm) {
       body.append("encrypt", "False");
     }
 
-    const data = await fetch(BASE_URL + url, {
+    const data = await fetch(SERVICE_BASE_URL + url, {
       method: "POST",
       body: body,
     });
@@ -59,11 +59,15 @@ export default function ButtonGroup({ ...props }: RootForm) {
       console.log(res);
       if (res.type == "text") {
         if (result) result.current!.value = res.result;
+        const download = document.getElementById("download_link");
+        download?.setAttribute("href", `${SERVICE_BASE_URL}static/${res.filename}`);
+        download?.setAttribute("download", `result.enc`);
+        download?.setAttribute("target", "_blank");
         toast.success(res.message);
       } else if (res.type == "filename") {
         console.log(res.result);
         const download = document.getElementById("download_link");
-        download?.setAttribute("href", `${BASE_URL}static/${res.result}`);
+        download?.setAttribute("href", `${SERVICE_BASE_URL}static/${res.result}`);
         download?.setAttribute("download", `result.enc`);
         download?.setAttribute("target", "_blank");
         toast.success(res.message);
@@ -74,6 +78,7 @@ export default function ButtonGroup({ ...props }: RootForm) {
       toast.error("Unexpected error");
     }
   }
+
 
   return (
     <>
@@ -133,7 +138,6 @@ export default function ButtonGroup({ ...props }: RootForm) {
             handleSubmit(true);
           }}
         >
-          <ToastContainer />
           Encrypt plaintext
         </button>
         <button
@@ -144,11 +148,7 @@ export default function ButtonGroup({ ...props }: RootForm) {
             handleSubmit(false);
           }}
         >
-          <ToastContainer />
           Decrypt ciphertext
-        </button>
-        <button type="button" className={styles.btn}>
-          <a id="download_cipher">Save ciphertext as file</a>
         </button>
         <div className={styles.flex}>
           <button

@@ -40,7 +40,7 @@ def write_file(filename, content):
     return newfile
 
 def make_response(result, message="Cipher successful", type = "text"):
-    return jsonify({"result":result, "message": message, "type": type})
+    return jsonify({"result":result, "filename": write_file("result.txt", result), "message": message, "type": type})
 
 def make_error(message, result="", type="error"):
     return jsonify({"result":result, "message": message, "type": type})

@@ -25,4 +25,5 @@ export const LIST_URL: string[] = [
   "hill",
 ];
 
-export const BASE_URL: string = "http://localhost:8000/";
+export const BASE_URL: string = "http://localhost:3000/";
+export const SERVICE_BASE_URL: string = "http://localhost:8000/";
