@@ -37,9 +37,9 @@ export default function ButtonGroup({ ...props }: RootForm) {
     try {
       const res = await data.json();
       console.log(res);
-      toast(res.message);
       if (res.type == "text"){
         if (result) result.current!.value = res.result;
+        toast.success(res.message);
       }
       else if (res.type == "filename"){
         console.log(res.result)
@@ -47,12 +47,16 @@ export default function ButtonGroup({ ...props }: RootForm) {
         download?.setAttribute('href', `${BASE_URL}static/${res.result}`);
         download?.setAttribute('download', `result.enc`);
         download?.setAttribute('target', '_blank');
+        toast.success(res.message);
+      }else{
+        toast.error(res.message);
       }
-    } catch {}
+    } catch {toast.error("Unexpected error")}
   }
 
   return (
     <>
+      <ToastContainer  closeButton={false} theme="colored"/>
       <div className={styles["btn-container"]}>
         {!File && (
           <div
@@ -111,7 +115,6 @@ export default function ButtonGroup({ ...props }: RootForm) {
             handleSubmit(true);
           }}
         >
-        <ToastContainer/>
           Encrypt plaintext
         </button>
         <button
@@ -122,7 +125,6 @@ export default function ButtonGroup({ ...props }: RootForm) {
             handleSubmit(false);
           }}
         >
-        <ToastContainer/>
           Decrypt ciphertext
         </button>
       </div>
