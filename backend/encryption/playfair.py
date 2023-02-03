@@ -38,7 +38,7 @@ class Playfair:
         # Padding
         padded_text = "" + text[0]
         for i in range(1, len(text)):
-            if padded_text[-1] == text[i]:
+            if len(padded_text) % 2 == 1 and padded_text[-1] == text[i]:
                 padded_text += "X"
             padded_text += text[i]
         
