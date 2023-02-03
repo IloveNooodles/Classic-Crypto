@@ -1,17 +1,39 @@
 import styles from "@/styles/Cipher.module.scss";
-import { BASE_URL } from "@/utils/desc";
+import { BASE_URL, SERVICE_BASE_URL } from "@/utils/desc";
 import { RootForm } from "@/utils/type";
 import { faUpload } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ChangeEvent, useRef, useState } from "react";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function ButtonGroup({ ...props }: RootForm) {
   const fileRef = useRef<HTMLInputElement>(null);
   const infoRef = useRef<HTMLParagraphElement>(null);
+  const [isGroupped, setIsGroupped] = useState<boolean>(false);
   const [File, setFile] = useState<File | null>(null);
   const { cipherKey, text, url, result } = props;
+
+  function formatNoSpace() {
+    if (!result?.current?.value) return;
+    if (!isGroupped) return;
+    result.current.value = result.current.value.replaceAll(" ", "");
+    setIsGroupped(false);
+  }
+
+  function formatGroupped() {
+    if (!result?.current?.value) return;
+    if (isGroupped) return;
+    var formattedText = "";
+    let len = result.current.value.length;
+    let resText = result.current.value;
+    for (let i = 0; i < len; i++) {
+      if (i > 0 && i % 5 == 0 && resText[i] != " ") formattedText += " ";
+      formattedText += resText[i];
+    }
+    result.current.value = formattedText;
+    setIsGroupped(true);
+  }
 
   async function handleSubmit(isEncrypt: boolean) {
     let body = new FormData();
@@ -28,31 +50,39 @@ export default function ButtonGroup({ ...props }: RootForm) {
       body.append("encrypt", "False");
     }
 
-    console.log(File, cipherKey, text?.current?.value);
-
-    const data = await fetch(BASE_URL + url, {
+    const data = await fetch(SERVICE_BASE_URL + url, {
       method: "POST",
       body: body,
     });
     try {
       const res = await data.json();
       console.log(res);
-      toast(res.message);
-      if (res.type == "text"){
+      if (res.type == "text") {
         if (result) result.current!.value = res.result;
-      }
-      else if (res.type == "filename"){
-        console.log(res.result)
         const download = document.getElementById("download_link");
-        download?.setAttribute('href', `${BASE_URL}static/${res.result}`);
-        download?.setAttribute('download', `result.enc`);
-        download?.setAttribute('target', '_blank');
+        download?.setAttribute("href", `${SERVICE_BASE_URL}static/${res.filename}`);
+        download?.setAttribute("download", `result.enc`);
+        download?.setAttribute("target", "_blank");
+        toast.success(res.message);
+      } else if (res.type == "filename") {
+        console.log(res.result);
+        const download = document.getElementById("download_link");
+        download?.setAttribute("href", `${SERVICE_BASE_URL}static/${res.result}`);
+        download?.setAttribute("download", `result.enc`);
+        download?.setAttribute("target", "_blank");
+        toast.success(res.message);
+      } else {
+        toast.error(res.message);
       }
-    } catch {}
+    } catch {
+      toast.error("Unexpected error");
+    }
   }
+
 
   return (
     <>
+      <ToastContainer closeButton={false} theme="colored" />
       <div className={styles["btn-container"]}>
         {!File && (
           <div
@@ -98,10 +128,7 @@ export default function ButtonGroup({ ...props }: RootForm) {
           Clear
         </button>
         <button type="button" className={styles.btn}>
-          <a id = "download_link"
-          >
-            Download file
-          </a>
+          <a id="download_link">Download result</a>
         </button>
         <button
           type="submit"
@@ -111,7 +138,6 @@ export default function ButtonGroup({ ...props }: RootForm) {
             handleSubmit(true);
           }}
         >
-        <ToastContainer/>
           Encrypt plaintext
         </button>
         <button
@@ -122,9 +148,24 @@ export default function ButtonGroup({ ...props }: RootForm) {
             handleSubmit(false);
           }}
         >
-        <ToastContainer/>
           Decrypt ciphertext
         </button>
+        <div className={styles.flex}>
+          <button
+            type="button"
+            className={`${styles.btn} ${styles["btn-format"]}`}
+            onClick={formatNoSpace}
+          >
+            No space
+          </button>
+          <button
+            type="button"
+            className={`${styles.btn} ${styles["btn-format"]}`}
+            onClick={formatGroupped}
+          >
+            Grouped 5
+          </button>
+        </div>
       </div>
     </>
   );

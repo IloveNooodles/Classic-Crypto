@@ -5,7 +5,6 @@ export const listOfCipher: string[] = [
   "Affine Cipher",
   "Playfair Cipher",
   "Hill Cipher",
-  "Enigma cipher",
 ];
 
 export const description: string[] = [
@@ -15,7 +14,6 @@ export const description: string[] = [
   "Expanded version of caesar cipher, using simple linear function",
   "Substitution cipher based on 5x5 square with unique algorithm",
   "Substitution cipher based on linear algebra",
-  "Substitution cipher that was used by Germany in World War 2",
 ];
 
 export const LIST_URL: string[] = [
@@ -27,4 +25,5 @@ export const LIST_URL: string[] = [
   "hill",
 ];
 
-export const BASE_URL: string = "http://localhost:8000/";
+export const BASE_URL: string = "http://localhost:3000/";
+export const SERVICE_BASE_URL: string = "http://localhost:8000/";

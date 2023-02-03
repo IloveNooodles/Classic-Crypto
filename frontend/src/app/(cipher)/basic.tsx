@@ -26,7 +26,9 @@ export default function Template({
       <div className={styles.center}>
         <div className={styles.description}>
           <code className={styles.title}>{listOfCipher[index]}</code>
-          <p className={inter.className}>{description[index]}</p>
+          <p className={inter.className} style={{ padding: "0.25rem 0" }}>
+            {description[index]}
+          </p>
         </div>
         <form className={styles.container} encType="multipart/form-data">
           <div className={styles.form}>
