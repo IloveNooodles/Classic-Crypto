@@ -385,7 +385,8 @@ def hill():
                 return make_response(cipher.encrypt(text))
             else:
                 return make_response(cipher.decrypt(text))
-        except:
+        except Exception as e:
+            print(e)
             return make_error("Key or text error")
     else:
         return make_error("Invalid request body")

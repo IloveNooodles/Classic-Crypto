@@ -6,8 +6,8 @@ from encryption.sanitize import Sanitize
 class Hill:
     def __init__(self, key: str):
         key = Sanitize.sanitize_alphabet(key)
-        size = round(math.sqrt(key))
-        assert(size*size == key)
+        size = round(math.sqrt(len(key)))
+        assert(size*size == len(key))
         self._charset = string.ascii_uppercase
         self._key = np.zeros(shape=(size,size))
         self._size = size
